@@ -249,6 +249,21 @@
     </div>
 
     <script>
+        // 🛡️ Sentinel: Prevent DOM-based XSS in editable fields
+        // Intercept paste events to strip HTML tags and only allow plain text
+        document.addEventListener('DOMContentLoaded', () => {
+            const editableFields = document.querySelectorAll('.editable-field');
+            editableFields.forEach(field => {
+                field.addEventListener('paste', (e) => {
+                    e.preventDefault();
+                    // Get text representation of clipboard
+                    const text = (e.originalEvent || e).clipboardData.getData('text/plain');
+                    // Insert text manually
+                    document.execCommand('insertText', false, text);
+                });
+            });
+        });
+
         function downloadPDF() {
             const btn = document.querySelector('button');
             const originalText = btn.innerHTML;
