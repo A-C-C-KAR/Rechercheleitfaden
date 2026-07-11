@@ -1,0 +1,4 @@
+## 2026-07-11 - [XSS in contenteditable fields]
+**Vulnerability:** The application uses elements with `contenteditable="true"` to allow users to input text without sanitizing pasted content. This allows users to paste HTML with embedded malicious scripts, leading to Cross-Site Scripting (XSS).
+**Learning:** `contenteditable` elements by default accept rich text, including HTML elements. If the application does not intend to support rich text formatting or if it doesn't sanitize the HTML before rendering/exporting, it introduces an XSS risk.
+**Prevention:** Intercept the `paste` event on `contenteditable` elements, call `e.preventDefault()`, and manually insert only the plain text using `e.clipboardData.getData('text/plain')`. Ensure any external libraries used for generating PDFs or other artifacts are loaded with Subresource Integrity (SRI) attributes.
