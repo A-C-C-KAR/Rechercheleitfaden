@@ -1,0 +1,3 @@
+## 2026-07-12 - Syncing UI Updates with Heavy JS Tasks
+**Learning:** In browser environments without Web Workers, heavy libraries like `html2pdf.js` freeze the main thread. If you update the UI (e.g., adding a loading spinner) immediately before calling the heavy function, the browser won't have a chance to paint the UI update, rendering the loading state invisible to the user.
+**Action:** When adding UX loading states to thread-blocking operations, wrap the heavy operation in a `setTimeout(..., 50)` (or `requestAnimationFrame`) to yield the main thread. This guarantees the browser paints the new "loading" DOM changes before it gets locked up doing the heavy processing.
