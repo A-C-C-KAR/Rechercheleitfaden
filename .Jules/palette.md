@@ -1,0 +1,3 @@
+## 2024-07-12 - Accessible Loading States on Action Buttons
+**Learning:** In purely static HTML projects without complex frameworks, buttons triggering async operations (like PDF generation) often simply set text or disable without giving adequate feedback. This causes a poor experience for keyboard users (no focus outline) and screen reader users (no announcement of the state change).
+**Action:** Always include a visual loading spinner, clear disabled styles (`disabled:opacity-75 disabled:cursor-not-allowed`), explicit focus indicators (`focus-visible:ring`), and `aria-live="polite"` to ensure the loading state is communicated clearly and accessibly to all users.
