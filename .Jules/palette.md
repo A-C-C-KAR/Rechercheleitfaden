@@ -1,0 +1,3 @@
+## 2024-05-24 - Provide UI feedback for main-thread blocking operations
+**Learning:** Libraries like `html2pdf.js` execute synchronous heavy operations that block the browser's main UI thread. If you try to update the DOM (e.g., showing a loading spinner) immediately before calling such libraries, the browser won't have time to paint the new UI frame before the thread is blocked, making the UI appear unresponsive.
+**Action:** When providing loading states for synchronous heavy operations, update the DOM first, and then wrap the heavy operation in a `setTimeout(..., 50)` to yield the event loop to the browser, allowing the loading state to be painted before the operation starts.
