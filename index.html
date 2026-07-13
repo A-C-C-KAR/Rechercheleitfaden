@@ -304,6 +304,15 @@
                 }, 3000);
             });
         }
+
+        // Security Fix: Prevent rich HTML pasting in contenteditable fields to mitigate XSS
+        document.addEventListener('paste', function(e) {
+            if (e.target && e.target.isContentEditable) {
+                e.preventDefault();
+                const text = (e.originalEvent || e).clipboardData.getData('text/plain');
+                document.execCommand('insertText', false, text);
+            }
+        });
     </script>
 </body>
 </html>
