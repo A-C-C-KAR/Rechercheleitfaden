@@ -1,0 +1,3 @@
+## 2024-05-24 - Yielding to the Main Thread for UI Feedback
+**Learning:** Heavy synchronous JavaScript libraries (like `html2pdf.js`) will block the browser's main UI thread immediately. If you change button text or add a loading spinner immediately before invoking such a library, the browser won't have time to render those UI changes, resulting in no feedback for the user.
+**Action:** When providing visual feedback before a heavy main-thread operation, wrap the heavy operation in a `setTimeout(..., 50)` to yield to the browser's render cycle, allowing the loading state to appear before the thread is blocked.
