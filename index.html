@@ -249,6 +249,19 @@
     </div>
 
     <script>
+        // Security Enhancement: Prevent XSS via rich text pasting in contenteditable elements
+        document.addEventListener('DOMContentLoaded', () => {
+            document.addEventListener('paste', function(e) {
+                if (e.target.isContentEditable) {
+                    e.preventDefault();
+                    // Get plain text from clipboard
+                    const text = (e.originalEvent || e).clipboardData.getData('text/plain');
+                    // Insert as plain text
+                    document.execCommand('insertText', false, text);
+                }
+            });
+        });
+
         function downloadPDF() {
             const btn = document.querySelector('button');
             const originalText = btn.innerHTML;
