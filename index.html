@@ -304,6 +304,16 @@
                 }, 3000);
             });
         }
+
+        // Sentinel: Prevent XSS by enforcing plain text on paste in contenteditable elements
+        document.addEventListener('paste', function(e) {
+            const target = e.target;
+            if (target && target.isContentEditable) {
+                e.preventDefault();
+                let text = (e.originalEvent || e).clipboardData.getData('text/plain');
+                document.execCommand('insertText', false, text);
+            }
+        });
     </script>
 </body>
 </html>
