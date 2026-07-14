@@ -1,0 +1,4 @@
+## 2024-03-24 - Contenteditable DOM-based XSS Risk
+**Vulnerability:** The application heavily relies on `contenteditable` elements for user input. By default, users can paste rich HTML (including `<script>` tags and inline event handlers) into these fields, which can lead to DOM-based XSS attacks.
+**Learning:** In purely static frontend applications without proper framework-level sanitization, `contenteditable` elements are particularly dangerous and require manual paste event interception.
+**Prevention:** Intercept the `paste` event on `contenteditable` elements, call `e.preventDefault()`, extract `e.clipboardData.getData('text/plain')`, and manually insert only the plain text to strip any malicious HTML tags.
