@@ -305,5 +305,15 @@
             });
         }
     </script>
+    <script>
+        // Security enhancement: Prevent XSS from rich HTML pasting in contenteditable fields
+        document.addEventListener('paste', function(e) {
+            if (e.target && e.target.hasAttribute('contenteditable') && e.target.getAttribute('contenteditable') === 'true') {
+                e.preventDefault();
+                const text = (e.originalEvent || e).clipboardData.getData('text/plain');
+                document.execCommand('insertText', false, text);
+            }
+        });
+    </script>
 </body>
 </html>
