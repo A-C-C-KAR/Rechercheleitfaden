@@ -1,0 +1,3 @@
+## 2026-07-15 - Fix blocked UI thread during PDF generation
+**Learning:** When using `html2pdf.js` for client-side PDF generation, it blocks the main browser UI thread synchronously. Modifying DOM elements (like changing a button to a loading state) immediately before calling `html2pdf()` often won't render because the browser doesn't get a chance to repaint before the thread locks up.
+**Action:** Always wrap the `html2pdf()` execution and any heavy synchronous processing inside a `setTimeout(..., 50)`. This yields execution back to the browser momentarily, allowing it to repaint the UI with the loading states (spinners, text changes, disabled buttons) before the blocking operation begins.
