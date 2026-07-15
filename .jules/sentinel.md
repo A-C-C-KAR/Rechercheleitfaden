@@ -1,0 +1,4 @@
+## 2024-11-20 - Enforcing text/plain in contenteditable elements
+**Vulnerability:** Rich text pasting in `contenteditable` elements can lead to XSS vulnerabilities if the clipboard contains malicious HTML (e.g., `<script>` tags or inline event handlers). The browser natively allows pasting full HTML structures.
+**Learning:** This project relies entirely on `contenteditable` rather than standard `<input>` or `<textarea>`. Because it's a client-side only static HTML site, we need to enforce plain text insertion directly at the DOM level to prevent malicious scripts from executing within the context of the user's browser.
+**Prevention:** Intercept the `paste` event globally. If the event target has the `contenteditable` attribute, call `e.preventDefault()`, extract `text/plain` from `e.clipboardData`, and insert it using `document.execCommand('insertText', false, plainText)`.
