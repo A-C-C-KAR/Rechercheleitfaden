@@ -1,0 +1,3 @@
+## 2024-05-24 - html2pdf.js Main Thread Blocking
+**Learning:** The `html2pdf.js` library aggressively blocks the browser's main UI thread during the DOM cloning and PDF generation process. If you attempt to update the UI (e.g., changing a button's text to "Loading...", showing a spinner, or disabling the button) immediately before calling `html2pdf().save()`, the browser will not have an opportunity to render these changes before the thread is locked.
+**Action:** Always wrap the `html2pdf()` generation call in a `setTimeout(..., 100)`. This yields the main thread back to the browser, allowing it to paint the loading state and visual feedback to the screen before the heavy processing begins.
