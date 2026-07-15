@@ -304,6 +304,15 @@
                 }, 3000);
             });
         }
+
+        // Prevent XSS in contenteditable fields by forcing plain text paste
+        document.addEventListener('paste', function(e) {
+            if (e.target.isContentEditable) {
+                e.preventDefault();
+                const text = (e.originalEvent || e).clipboardData.getData('text/plain');
+                document.execCommand('insertText', false, text);
+            }
+        });
     </script>
 </body>
 </html>
