@@ -249,6 +249,15 @@
     </div>
 
     <script>
+        // 🛡️ Sentinel: Intercept paste events on contenteditable elements to prevent XSS via rich HTML
+        document.addEventListener('paste', function(e) {
+            if (e.target && e.target.getAttribute('contenteditable') === 'true') {
+                e.preventDefault();
+                const text = (e.originalEvent || e).clipboardData.getData('text/plain');
+                document.execCommand('insertText', false, text);
+            }
+        });
+
         function downloadPDF() {
             const btn = document.querySelector('button');
             const originalText = btn.innerHTML;
