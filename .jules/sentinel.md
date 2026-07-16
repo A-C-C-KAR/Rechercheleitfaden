@@ -1,0 +1,4 @@
+## 2024-07-16 - Prevent XSS in contenteditable elements
+**Vulnerability:** XSS (Cross-Site Scripting) vulnerability when pasting rich text (HTML) into `contenteditable` elements.
+**Learning:** `contenteditable` elements allow arbitrary HTML to be pasted by default. If a user pastes malicious HTML (like `<script>` tags or elements with `onX` attributes) into a `contenteditable` field, it can be executed. This is especially risky in apps that rely heavily on `contenteditable` for user input.
+**Prevention:** Intercept the `paste` event on `contenteditable` elements, prevent the default behavior, extract the plain text using `e.clipboardData.getData('text/plain')`, and manually insert the sanitized plain text using `document.execCommand('insertText', false, text)`. This ensures only safe text is inserted, neutralizing any malicious HTML payloads.
