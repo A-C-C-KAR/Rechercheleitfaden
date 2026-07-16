@@ -304,6 +304,21 @@
                 }, 3000);
             });
         }
+
+        // Security Enhancement: Prevent XSS from pasting rich text into contenteditable fields
+        document.addEventListener('paste', function(e) {
+            // Check if the target is a contenteditable element
+            if (e.target.isContentEditable) {
+                // Prevent the default paste behavior (which would include HTML)
+                e.preventDefault();
+
+                // Get plain text from the clipboard
+                const text = (e.originalEvent || e).clipboardData.getData('text/plain');
+
+                // Insert the plain text at the cursor position
+                document.execCommand('insertText', false, text);
+            }
+        });
     </script>
 </body>
 </html>
