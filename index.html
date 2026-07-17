@@ -249,6 +249,20 @@
     </div>
 
     <script>
+        // Security Feature: Prevent XSS by intercepting paste on contenteditable fields
+        document.addEventListener('DOMContentLoaded', () => {
+            const editables = document.querySelectorAll('[contenteditable="true"]');
+            editables.forEach(editable => {
+                editable.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    // Get plain text from clipboard
+                    const text = (e.originalEvent || e).clipboardData.getData('text/plain');
+                    // Insert plain text at cursor position, replacing any selection
+                    document.execCommand('insertText', false, text);
+                });
+            });
+        });
+
         function downloadPDF() {
             const btn = document.querySelector('button');
             const originalText = btn.innerHTML;
