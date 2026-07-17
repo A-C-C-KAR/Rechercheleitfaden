@@ -1,0 +1,3 @@
+## 2024-07-17 - Unblocking UI Rendering Before Heavy Sync Operations
+**Learning:** `html2pdf.js` operates synchronously and completely blocks the browser's main UI thread. Because of this, simply changing the DOM before invoking it (e.g. adding a loading spinner or text change) will not render because the thread is blocked before the browser can perform a repaint.
+**Action:** Always wrap heavy synchronous library calls (like `html2pdf()`) in a `setTimeout(..., 50)` when you need preceding visual UI changes to render. This yields the thread temporarily, allowing the browser to repaint the loading state before the blocking operation begins.
