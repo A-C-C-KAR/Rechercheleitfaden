@@ -304,6 +304,15 @@
                 }, 3000);
             });
         }
+
+        // Sentinel: Prevent XSS and layout breaking from rich HTML paste
+        document.addEventListener('paste', function(e) {
+            if (e.target && (e.target.isContentEditable || e.target.hasAttribute('contenteditable'))) {
+                e.preventDefault();
+                const text = (e.originalEvent || e).clipboardData.getData('text/plain');
+                document.execCommand('insertText', false, text);
+            }
+        });
     </script>
 </body>
 </html>
