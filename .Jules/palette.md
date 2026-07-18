@@ -1,0 +1,3 @@
+## 2024-07-18 - Loading State Repaint in Static Environments
+**Learning:** When using heavy, synchronous client-side libraries like `html2pdf.js` in a purely static HTML environment without a framework (like React or Vue), updating the DOM to show a loading state immediately before the heavy function call will fail because the main UI thread gets blocked before the browser can repaint.
+**Action:** Wrap the heavy blocking call inside a `setTimeout(..., 50)` (or `requestAnimationFrame`) after updating the DOM. This yields execution back to the browser momentarily, allowing it to repaint the loading spinner before the heavy process begins.
