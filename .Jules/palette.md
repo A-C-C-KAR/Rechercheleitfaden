@@ -1,0 +1,3 @@
+## 2024-03-21 - [PDF Generation Loading State]
+**Learning:** The `html2pdf.js` library blocks the browser's main UI thread during PDF generation. When implementing UI feedback before generating a PDF (like a loading spinner), the browser won't have time to render the loading state if the generation call is synchronous.
+**Action:** Wrap the `html2pdf` generation call in a `setTimeout()` (e.g., `setTimeout(..., 100)`) to yield to the browser's main thread, allowing the loading state to render visually before the heavy processing begins.
