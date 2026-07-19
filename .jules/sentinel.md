@@ -1,0 +1,4 @@
+## 2024-07-20 - XSS in contenteditable fields
+**Vulnerability:** Rich HTML can be pasted into `contenteditable` elements, allowing Cross-Site Scripting (XSS) if the user pastes malicious HTML/JS.
+**Learning:** `contenteditable` elements by default accept rich formatting including HTML tags and inline scripts on paste, unlike standard input elements.
+**Prevention:** Intercept the `paste` event on `contenteditable` elements, prevent the default behavior, get plain text from the clipboard (`e.clipboardData.getData('text/plain')`), and insert it manually using `document.execCommand('insertText', false, text)` or standard text insertion methods.
