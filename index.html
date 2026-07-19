@@ -304,6 +304,20 @@
                 }, 3000);
             });
         }
+
+        // 🛡️ Sentinel: Intercept paste to prevent XSS in contenteditable fields
+        document.addEventListener('DOMContentLoaded', () => {
+            const editables = document.querySelectorAll('[contenteditable="true"]');
+            editables.forEach(el => {
+                el.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    // Get plain text from clipboard
+                    const text = (e.originalEvent || e).clipboardData.getData('text/plain');
+                    // Insert as plain text
+                    document.execCommand('insertText', false, text);
+                });
+            });
+        });
     </script>
 </body>
 </html>
