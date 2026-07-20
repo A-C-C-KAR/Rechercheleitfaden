@@ -304,6 +304,20 @@
                 }, 3000);
             });
         }
+
+        // 🛡️ Sentinel: Security Enhancement
+        // Prevent XSS vulnerabilities by intercepting paste events in contenteditable
+        // fields and forcing the inserted content to be plain text only.
+        document.addEventListener('paste', function(e) {
+            const target = e.target;
+            if (target && target.isContentEditable) {
+                e.preventDefault();
+                // Extract plain text from the clipboard
+                const text = (e.originalEvent || e).clipboardData.getData('text/plain');
+                // Insert the plain text safely at the current cursor position
+                document.execCommand('insertText', false, text);
+            }
+        });
     </script>
 </body>
 </html>
