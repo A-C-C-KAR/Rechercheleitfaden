@@ -1,0 +1,4 @@
+## 2024-07-20 - Prevent XSS in contenteditable fields via Paste interception
+**Vulnerability:** The application heavily relies on `contenteditable` elements for user input instead of standard HTML input fields. Without proper handling, users can paste rich HTML payloads directly into these elements, potentially leading to Cross-Site Scripting (XSS) vulnerabilities if the input is ever processed or saved without sanitization.
+**Learning:** `contenteditable` fields inherently accept and render pasted HTML. To enforce plain text input, the `paste` event must be intercepted.
+**Prevention:** Intercept the `paste` event on all `contenteditable` elements, call `e.preventDefault()`, extract the plain text using `e.clipboardData.getData('text/plain')`, and insert it safely using `document.execCommand('insertText', false, text)`. This effectively strips any HTML formatting or executable scripts from the pasted content.

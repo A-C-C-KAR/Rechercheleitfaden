@@ -304,6 +304,25 @@
                 }, 3000);
             });
         }
+
+        // Sentinel: Prevent XSS by intercepting paste events on contenteditable elements
+        // and forcing them to be plain text only.
+        document.addEventListener('DOMContentLoaded', () => {
+            document.addEventListener('paste', function(e) {
+                const target = e.target;
+
+                // Only apply to elements with contenteditable="true"
+                if (target && target.getAttribute && target.getAttribute('contenteditable') === 'true') {
+                    e.preventDefault();
+
+                    // Get plain text from clipboard
+                    const text = (e.originalEvent || e).clipboardData.getData('text/plain');
+
+                    // Insert plain text, executing no HTML/scripts
+                    document.execCommand('insertText', false, text);
+                }
+            });
+        });
     </script>
 </body>
 </html>
