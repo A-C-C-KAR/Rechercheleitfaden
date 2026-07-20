@@ -1,0 +1,3 @@
+## 2024-05-24 - Yielding to Main Thread for UI Updates with html2pdf.js
+**Learning:** `html2pdf.js` blocks the main browser UI thread when generating the PDF. This means that if you try to update the UI (like adding a loading spinner or changing button text) immediately before calling `html2pdf().from(...).save()`, those UI updates won't render.
+**Action:** When updating the UI before an expensive blocking task like `html2pdf`, wrap the execution in a `setTimeout(..., 50)`. This allows the browser enough time to repaint and show the updated loading state before the main thread is locked up by the PDF generation process.
