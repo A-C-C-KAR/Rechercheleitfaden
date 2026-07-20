@@ -1,309 +1,472 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mein Rechercheleitfaden</title>
     <!-- Tailwind CSS für einfaches Layouting -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- html2pdf.js Bibliothek für den PDF-Download -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    
+
     <style>
-        /* Schriftart Aptos priorisieren, danach Standard-Alternativen */
+      /* Schriftart Aptos priorisieren, danach Standard-Alternativen */
+      body {
+        font-family: "Aptos", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background-color: #2c3e50;
+        background-image: radial-gradient(#34495e 1px, transparent 1px);
+        background-size: 20px 20px;
+      }
+
+      /* Design für die Schriftrolle */
+      .scroll-wrapper {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        padding: 2rem 0;
+        filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.3));
+      }
+
+      .scroll-top,
+      .scroll-bottom {
+        height: 40px;
+        background: linear-gradient(to bottom, #8b5a2b, #6b4226, #8b5a2b);
+        border-radius: 20px;
+        position: relative;
+        z-index: 10;
+        margin: 0 -20px;
+        box-shadow:
+          inset 0 2px 5px rgba(255, 255, 255, 0.2),
+          0 5px 10px rgba(0, 0, 0, 0.5);
+        border: 2px solid #3e2211;
+      }
+
+      .scroll-bottom {
+        background: linear-gradient(to top, #8b5a2b, #6b4226, #8b5a2b);
+      }
+
+      .scroll-top::before,
+      .scroll-top::after,
+      .scroll-bottom::before,
+      .scroll-bottom::after {
+        content: "";
+        position: absolute;
+        width: 30px;
+        height: 50px;
+        background: linear-gradient(to right, #5c3a21, #8b5a2b, #5c3a21);
+        top: -7px;
+        border-radius: 50%;
+        border: 2px solid #3e2211;
+      }
+
+      .scroll-top::before,
+      .scroll-bottom::before {
+        left: -15px;
+      }
+      .scroll-top::after,
+      .scroll-bottom::after {
+        right: -15px;
+      }
+
+      .scroll-paper {
+        background-color: #fdf6e3; /* Pergament-Farbe */
+        background-image:
+          linear-gradient(rgba(200, 180, 150, 0.1) 2px, transparent 2px),
+          linear-gradient(90deg, rgba(200, 180, 150, 0.1) 2px, transparent 2px);
+        background-size:
+          100% 2rem,
+          2rem 100%;
+        padding: 3rem 4rem;
+        min-height: 800px;
+        margin: -15px 0;
+        position: relative;
+        z-index: 5;
+        box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.2);
+        border-left: 2px solid #e3d5b8;
+        border-right: 2px solid #e3d5b8;
+      }
+
+      /* Styling für die bearbeitbaren Bereiche */
+      .editable-field {
+        min-height: 2rem;
+        border-bottom: 2px dashed #d0b894;
+        transition: all 0.3s ease;
+        outline: none;
+        padding: 0.25rem 0;
+        color: #2c3e50;
+      }
+
+      .editable-field:focus {
+        border-bottom: 2px solid #8b5a2b;
+        background-color: rgba(255, 255, 255, 0.4);
+        border-radius: 4px;
+      }
+
+      .editable-field:empty:before {
+        content: attr(data-placeholder);
+        color: #a89f91;
+        font-style: italic;
+      }
+
+      /* Verstecke UI-Elemente beim Drucken */
+      @media print {
+        .no-print {
+          display: none !important;
+        }
         body {
-            font-family: 'Aptos', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #2c3e50;
-            background-image: radial-gradient(#34495e 1px, transparent 1px);
-            background-size: 20px 20px;
+          background: none;
         }
-
-        /* Design für die Schriftrolle */
         .scroll-wrapper {
-            position: relative;
-            width: 100%;
-            max-width: 800px;
-            padding: 2rem 0;
-            filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.3));
+          filter: none;
         }
-
-        .scroll-top, .scroll-bottom {
-            height: 40px;
-            background: linear-gradient(to bottom, #8b5a2b, #6b4226, #8b5a2b);
-            border-radius: 20px;
-            position: relative;
-            z-index: 10;
-            margin: 0 -20px;
-            box-shadow: inset 0 2px 5px rgba(255,255,255,0.2), 0 5px 10px rgba(0,0,0,0.5);
-            border: 2px solid #3e2211;
-        }
-
-        .scroll-bottom {
-            background: linear-gradient(to top, #8b5a2b, #6b4226, #8b5a2b);
-        }
-
-        .scroll-top::before, .scroll-top::after,
-        .scroll-bottom::before, .scroll-bottom::after {
-            content: '';
-            position: absolute;
-            width: 30px;
-            height: 50px;
-            background: linear-gradient(to right, #5c3a21, #8b5a2b, #5c3a21);
-            top: -7px;
-            border-radius: 50%;
-            border: 2px solid #3e2211;
-        }
-
-        .scroll-top::before, .scroll-bottom::before { left: -15px; }
-        .scroll-top::after, .scroll-bottom::after { right: -15px; }
-
-        .scroll-paper {
-            background-color: #fdf6e3; /* Pergament-Farbe */
-            background-image: 
-                linear-gradient(rgba(200, 180, 150, 0.1) 2px, transparent 2px),
-                linear-gradient(90deg, rgba(200, 180, 150, 0.1) 2px, transparent 2px);
-            background-size: 100% 2rem, 2rem 100%;
-            padding: 3rem 4rem;
-            min-height: 800px;
-            margin: -15px 0;
-            position: relative;
-            z-index: 5;
-            box-shadow: inset 0 0 40px rgba(139, 90, 43, 0.2);
-            border-left: 2px solid #e3d5b8;
-            border-right: 2px solid #e3d5b8;
-        }
-
-        /* Styling für die bearbeitbaren Bereiche */
-        .editable-field {
-            min-height: 2rem;
-            border-bottom: 2px dashed #d0b894;
-            transition: all 0.3s ease;
-            outline: none;
-            padding: 0.25rem 0;
-            color: #2c3e50;
-        }
-
-        .editable-field:focus {
-            border-bottom: 2px solid #8b5a2b;
-            background-color: rgba(255, 255, 255, 0.4);
-            border-radius: 4px;
-        }
-
-        .editable-field:empty:before {
-            content: attr(data-placeholder);
-            color: #a89f91;
-            font-style: italic;
-        }
-
-        /* Verstecke UI-Elemente beim Drucken */
-        @media print {
-            .no-print { display: none !important; }
-            body { background: none; }
-            .scroll-wrapper { filter: none; }
-        }
+      }
     </style>
-</head>
-<body class="p-4 md:p-8">
-
+  </head>
+  <body class="p-4 md:p-8">
     <!-- Kontrollbereich (Download-Button) -->
     <div class="max-w-4xl mx-auto mb-8 text-center no-print">
-        <h1 class="text-3xl font-bold text-white mb-4">Rechercheleitfaden Generator</h1>
-        <p class="text-gray-300 mb-6">Fülle deinen Leitfaden aus und lade ihn anschließend als PDF herunter.</p>
-        <button onclick="downloadPDF()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg flex items-center justify-center mx-auto transition-transform transform hover:scale-105">
-            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-            Als PDF herunterladen
-        </button>
+      <h1 class="text-3xl font-bold text-white mb-4">
+        Rechercheleitfaden Generator
+      </h1>
+      <p class="text-gray-300 mb-6">
+        Fülle deinen Leitfaden aus und lade ihn anschließend als PDF herunter.
+      </p>
+      <button
+        onclick="downloadPDF()"
+        aria-label="PDF herunterladen"
+        aria-busy="false"
+        class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg flex items-center justify-center mx-auto transition-transform transform hover:scale-105 disabled:opacity-75 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:bg-amber-600"
+      >
+        <svg
+          class="w-6 h-6 mr-2"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+          ></path>
+        </svg>
+        Als PDF herunterladen
+      </button>
     </div>
 
     <!-- HIER IST DER FIX: Die ID 'print-wrapper' wurde hinzugefügt -->
     <div id="print-wrapper" class="flex justify-center w-full pb-12">
-        
-        <!-- Die Schriftrolle -->
-        <div class="scroll-wrapper" id="pdf-content">
-            <!-- Obere Holzstange -->
-            <div class="scroll-top no-print"></div>
+      <!-- Die Schriftrolle -->
+      <div class="scroll-wrapper" id="pdf-content">
+        <!-- Obere Holzstange -->
+        <div class="scroll-top no-print"></div>
 
-            <!-- Das Papier -->
-            <div class="scroll-paper">
-                <div class="text-center mb-10">
-                    <h1 class="text-4xl md:text-5xl font-bold text-[#5c3a21] mb-2" style="font-family: 'Aptos Serif', Georgia, serif;">Mein Rechercheleitfaden</h1>
-                    <div class="h-1 w-32 mx-auto bg-[#8b5a2b] rounded"></div>
-                </div>
+        <!-- Das Papier -->
+        <div class="scroll-paper">
+          <div class="text-center mb-10">
+            <h1
+              class="text-4xl md:text-5xl font-bold text-[#5c3a21] mb-2"
+              style="font-family: &quot;Aptos Serif&quot;, Georgia, serif"
+            >
+              Mein Rechercheleitfaden
+            </h1>
+            <div class="h-1 w-32 mx-auto bg-[#8b5a2b] rounded"></div>
+          </div>
 
-                <!-- Name des Schülers -->
-                <div class="mb-8 flex items-end">
-                    <span class="text-lg font-bold text-[#5c3a21] mr-3 w-32">Mein Name:</span>
-                    <div class="editable-field flex-1 text-lg font-medium" contenteditable="true" data-placeholder="Klicke hier, um deinen Namen einzutragen..."></div>
-                </div>
+          <!-- Name des Schülers -->
+          <div class="mb-8 flex items-end">
+            <span class="text-lg font-bold text-[#5c3a21] mr-3 w-32"
+              >Mein Name:</span
+            >
+            <div
+              class="editable-field flex-1 text-lg font-medium"
+              contenteditable="true"
+              data-placeholder="Klicke hier, um deinen Namen einzutragen..."
+            ></div>
+          </div>
 
-                <!-- Die 10 Recherche-Regeln -->
-                <div class="space-y-8">
-                    <p class="text-[#8b5a2b] font-medium mb-6 text-center text-lg">Meine 10 wichtigsten Regeln für eine gute Recherche:</p>
+          <!-- Die 10 Recherche-Regeln -->
+          <div class="space-y-8">
+            <p class="text-[#8b5a2b] font-medium mb-6 text-center text-lg">
+              Meine 10 wichtigsten Regeln für eine gute Recherche:
+            </p>
 
-                    <div class="point-container">
-                        <div class="flex items-end mb-2">
-                            <span class="text-xl font-bold text-[#5c3a21] mr-2 w-6">1.</span>
-                            <div class="editable-field flex-1 text-lg font-bold text-[#8b5a2b]" contenteditable="true" data-placeholder="Regel (z.B. 2-Quellen-Prinzip)"></div>
-                        </div>
-                        <div class="pl-8">
-                            <div class="editable-field text-[#2c3e50]" contenteditable="true" data-placeholder="Was heißt das? (z.B. Ich suche meine Informationen immer auf zwei unabhängigen Seiten...)"></div>
-                        </div>
-                    </div>
-
-                    <div class="point-container">
-                        <div class="flex items-end mb-2">
-                            <span class="text-xl font-bold text-[#5c3a21] mr-2 w-6">2.</span>
-                            <div class="editable-field flex-1 text-lg font-bold text-[#8b5a2b]" contenteditable="true" data-placeholder="Zweite Regel hier eintragen..."></div>
-                        </div>
-                        <div class="pl-8">
-                            <div class="editable-field text-[#2c3e50]" contenteditable="true" data-placeholder="Erkläre hier, was diese Regel bedeutet..."></div>
-                        </div>
-                    </div>
-
-                    <div class="point-container">
-                        <div class="flex items-end mb-2">
-                            <span class="text-xl font-bold text-[#5c3a21] mr-2 w-6">3.</span>
-                            <div class="editable-field flex-1 text-lg font-bold text-[#8b5a2b]" contenteditable="true" data-placeholder="Dritte Regel hier eintragen..."></div>
-                        </div>
-                        <div class="pl-8">
-                            <div class="editable-field text-[#2c3e50]" contenteditable="true" data-placeholder="Erkläre hier, was diese Regel bedeutet..."></div>
-                        </div>
-                    </div>
-
-                    <div class="point-container">
-                        <div class="flex items-end mb-2">
-                            <span class="text-xl font-bold text-[#5c3a21] mr-2 w-6">4.</span>
-                            <div class="editable-field flex-1 text-lg font-bold text-[#8b5a2b]" contenteditable="true" data-placeholder="Vierte Regel hier eintragen..."></div>
-                        </div>
-                        <div class="pl-8">
-                            <div class="editable-field text-[#2c3e50]" contenteditable="true" data-placeholder="Erkläre hier, was diese Regel bedeutet..."></div>
-                        </div>
-                    </div>
-
-                    <div class="point-container">
-                        <div class="flex items-end mb-2">
-                            <span class="text-xl font-bold text-[#5c3a21] mr-2 w-6">5.</span>
-                            <div class="editable-field flex-1 text-lg font-bold text-[#8b5a2b]" contenteditable="true" data-placeholder="Fünfte Regel hier eintragen..."></div>
-                        </div>
-                        <div class="pl-8">
-                            <div class="editable-field text-[#2c3e50]" contenteditable="true" data-placeholder="Erkläre hier, was diese Regel bedeutet..."></div>
-                        </div>
-                    </div>
-
-                    <div class="point-container">
-                        <div class="flex items-end mb-2">
-                            <span class="text-xl font-bold text-[#5c3a21] mr-2 w-6">6.</span>
-                            <div class="editable-field flex-1 text-lg font-bold text-[#8b5a2b]" contenteditable="true" data-placeholder="Sechste Regel hier eintragen..."></div>
-                        </div>
-                        <div class="pl-8">
-                            <div class="editable-field text-[#2c3e50]" contenteditable="true" data-placeholder="Erkläre hier, was diese Regel bedeutet..."></div>
-                        </div>
-                    </div>
-
-                    <div class="point-container">
-                        <div class="flex items-end mb-2">
-                            <span class="text-xl font-bold text-[#5c3a21] mr-2 w-6">7.</span>
-                            <div class="editable-field flex-1 text-lg font-bold text-[#8b5a2b]" contenteditable="true" data-placeholder="Siebte Regel hier eintragen..."></div>
-                        </div>
-                        <div class="pl-8">
-                            <div class="editable-field text-[#2c3e50]" contenteditable="true" data-placeholder="Erkläre hier, was diese Regel bedeutet..."></div>
-                        </div>
-                    </div>
-
-                    <div class="point-container">
-                        <div class="flex items-end mb-2">
-                            <span class="text-xl font-bold text-[#5c3a21] mr-2 w-6">8.</span>
-                            <div class="editable-field flex-1 text-lg font-bold text-[#8b5a2b]" contenteditable="true" data-placeholder="Achte Regel hier eintragen..."></div>
-                        </div>
-                        <div class="pl-8">
-                            <div class="editable-field text-[#2c3e50]" contenteditable="true" data-placeholder="Erkläre hier, was diese Regel bedeutet..."></div>
-                        </div>
-                    </div>
-
-                    <div class="point-container">
-                        <div class="flex items-end mb-2">
-                            <span class="text-xl font-bold text-[#5c3a21] mr-2 w-6">9.</span>
-                            <div class="editable-field flex-1 text-lg font-bold text-[#8b5a2b]" contenteditable="true" data-placeholder="Neunte Regel hier eintragen..."></div>
-                        </div>
-                        <div class="pl-8">
-                            <div class="editable-field text-[#2c3e50]" contenteditable="true" data-placeholder="Erkläre hier, was diese Regel bedeutet..."></div>
-                        </div>
-                    </div>
-
-                    <div class="point-container">
-                        <div class="flex items-end mb-2">
-                            <span class="text-xl font-bold text-[#5c3a21] mr-2 w-8">10.</span>
-                            <div class="editable-field flex-1 text-lg font-bold text-[#8b5a2b]" contenteditable="true" data-placeholder="Zehnte Regel hier eintragen..."></div>
-                        </div>
-                        <div class="pl-10">
-                            <div class="editable-field text-[#2c3e50]" contenteditable="true" data-placeholder="Erkläre hier, was diese Regel bedeutet..."></div>
-                        </div>
-                    </div>
-
-                </div>
+            <div class="point-container">
+              <div class="flex items-end mb-2">
+                <span class="text-xl font-bold text-[#5c3a21] mr-2 w-6"
+                  >1.</span
+                >
+                <div
+                  class="editable-field flex-1 text-lg font-bold text-[#8b5a2b]"
+                  contenteditable="true"
+                  data-placeholder="Regel (z.B. 2-Quellen-Prinzip)"
+                ></div>
+              </div>
+              <div class="pl-8">
+                <div
+                  class="editable-field text-[#2c3e50]"
+                  contenteditable="true"
+                  data-placeholder="Was heißt das? (z.B. Ich suche meine Informationen immer auf zwei unabhängigen Seiten...)"
+                ></div>
+              </div>
             </div>
 
-            <!-- Untere Holzstange -->
-            <div class="scroll-bottom no-print"></div>
+            <div class="point-container">
+              <div class="flex items-end mb-2">
+                <span class="text-xl font-bold text-[#5c3a21] mr-2 w-6"
+                  >2.</span
+                >
+                <div
+                  class="editable-field flex-1 text-lg font-bold text-[#8b5a2b]"
+                  contenteditable="true"
+                  data-placeholder="Zweite Regel hier eintragen..."
+                ></div>
+              </div>
+              <div class="pl-8">
+                <div
+                  class="editable-field text-[#2c3e50]"
+                  contenteditable="true"
+                  data-placeholder="Erkläre hier, was diese Regel bedeutet..."
+                ></div>
+              </div>
+            </div>
+
+            <div class="point-container">
+              <div class="flex items-end mb-2">
+                <span class="text-xl font-bold text-[#5c3a21] mr-2 w-6"
+                  >3.</span
+                >
+                <div
+                  class="editable-field flex-1 text-lg font-bold text-[#8b5a2b]"
+                  contenteditable="true"
+                  data-placeholder="Dritte Regel hier eintragen..."
+                ></div>
+              </div>
+              <div class="pl-8">
+                <div
+                  class="editable-field text-[#2c3e50]"
+                  contenteditable="true"
+                  data-placeholder="Erkläre hier, was diese Regel bedeutet..."
+                ></div>
+              </div>
+            </div>
+
+            <div class="point-container">
+              <div class="flex items-end mb-2">
+                <span class="text-xl font-bold text-[#5c3a21] mr-2 w-6"
+                  >4.</span
+                >
+                <div
+                  class="editable-field flex-1 text-lg font-bold text-[#8b5a2b]"
+                  contenteditable="true"
+                  data-placeholder="Vierte Regel hier eintragen..."
+                ></div>
+              </div>
+              <div class="pl-8">
+                <div
+                  class="editable-field text-[#2c3e50]"
+                  contenteditable="true"
+                  data-placeholder="Erkläre hier, was diese Regel bedeutet..."
+                ></div>
+              </div>
+            </div>
+
+            <div class="point-container">
+              <div class="flex items-end mb-2">
+                <span class="text-xl font-bold text-[#5c3a21] mr-2 w-6"
+                  >5.</span
+                >
+                <div
+                  class="editable-field flex-1 text-lg font-bold text-[#8b5a2b]"
+                  contenteditable="true"
+                  data-placeholder="Fünfte Regel hier eintragen..."
+                ></div>
+              </div>
+              <div class="pl-8">
+                <div
+                  class="editable-field text-[#2c3e50]"
+                  contenteditable="true"
+                  data-placeholder="Erkläre hier, was diese Regel bedeutet..."
+                ></div>
+              </div>
+            </div>
+
+            <div class="point-container">
+              <div class="flex items-end mb-2">
+                <span class="text-xl font-bold text-[#5c3a21] mr-2 w-6"
+                  >6.</span
+                >
+                <div
+                  class="editable-field flex-1 text-lg font-bold text-[#8b5a2b]"
+                  contenteditable="true"
+                  data-placeholder="Sechste Regel hier eintragen..."
+                ></div>
+              </div>
+              <div class="pl-8">
+                <div
+                  class="editable-field text-[#2c3e50]"
+                  contenteditable="true"
+                  data-placeholder="Erkläre hier, was diese Regel bedeutet..."
+                ></div>
+              </div>
+            </div>
+
+            <div class="point-container">
+              <div class="flex items-end mb-2">
+                <span class="text-xl font-bold text-[#5c3a21] mr-2 w-6"
+                  >7.</span
+                >
+                <div
+                  class="editable-field flex-1 text-lg font-bold text-[#8b5a2b]"
+                  contenteditable="true"
+                  data-placeholder="Siebte Regel hier eintragen..."
+                ></div>
+              </div>
+              <div class="pl-8">
+                <div
+                  class="editable-field text-[#2c3e50]"
+                  contenteditable="true"
+                  data-placeholder="Erkläre hier, was diese Regel bedeutet..."
+                ></div>
+              </div>
+            </div>
+
+            <div class="point-container">
+              <div class="flex items-end mb-2">
+                <span class="text-xl font-bold text-[#5c3a21] mr-2 w-6"
+                  >8.</span
+                >
+                <div
+                  class="editable-field flex-1 text-lg font-bold text-[#8b5a2b]"
+                  contenteditable="true"
+                  data-placeholder="Achte Regel hier eintragen..."
+                ></div>
+              </div>
+              <div class="pl-8">
+                <div
+                  class="editable-field text-[#2c3e50]"
+                  contenteditable="true"
+                  data-placeholder="Erkläre hier, was diese Regel bedeutet..."
+                ></div>
+              </div>
+            </div>
+
+            <div class="point-container">
+              <div class="flex items-end mb-2">
+                <span class="text-xl font-bold text-[#5c3a21] mr-2 w-6"
+                  >9.</span
+                >
+                <div
+                  class="editable-field flex-1 text-lg font-bold text-[#8b5a2b]"
+                  contenteditable="true"
+                  data-placeholder="Neunte Regel hier eintragen..."
+                ></div>
+              </div>
+              <div class="pl-8">
+                <div
+                  class="editable-field text-[#2c3e50]"
+                  contenteditable="true"
+                  data-placeholder="Erkläre hier, was diese Regel bedeutet..."
+                ></div>
+              </div>
+            </div>
+
+            <div class="point-container">
+              <div class="flex items-end mb-2">
+                <span class="text-xl font-bold text-[#5c3a21] mr-2 w-8"
+                  >10.</span
+                >
+                <div
+                  class="editable-field flex-1 text-lg font-bold text-[#8b5a2b]"
+                  contenteditable="true"
+                  data-placeholder="Zehnte Regel hier eintragen..."
+                ></div>
+              </div>
+              <div class="pl-10">
+                <div
+                  class="editable-field text-[#2c3e50]"
+                  contenteditable="true"
+                  data-placeholder="Erkläre hier, was diese Regel bedeutet..."
+                ></div>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <!-- Untere Holzstange -->
+        <div class="scroll-bottom no-print"></div>
+      </div>
     </div>
 
     <script>
-        function downloadPDF() {
-            const btn = document.querySelector('button');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = 'PDF wird erstellt...';
-            btn.disabled = true;
+      function downloadPDF() {
+        const btn = document.querySelector("button");
+        const originalText = btn.innerHTML;
+        btn.innerHTML =
+          '<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> PDF wird erstellt...';
+        btn.disabled = true;
+        btn.setAttribute("aria-busy", "true");
 
-            // Wichtig: Nach oben scrollen, bevor der Klon erstellt wird
-            window.scrollTo(0, 0);
+        // Wichtig: Nach oben scrollen, bevor der Klon erstellt wird
+        window.scrollTo(0, 0);
 
-            const element = document.getElementById('pdf-content');
-            
-            const opt = {
-                margin:       10, 
-                filename:     'Mein_Rechercheleitfaden.pdf',
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { 
-                    scale: 2, 
-                    useCORS: true,
-                    logging: false,
-                    // DER ULTIMATIVE FIX GEGEN DAS ABSCHNEIDEN!
-                    onclone: function(clonedDoc) {
-                        const printWrapper = clonedDoc.getElementById('print-wrapper');
-                        const pdfContent = clonedDoc.getElementById('pdf-content');
-                        
-                        if (printWrapper) {
-                            // Im unsichtbaren Klon wird die Box gnadenlos an den ganz linken Rand gezwungen.
-                            // Dadurch ist die X-Koordinate definitiv 0 und nichts wird mehr abgeschnitten!
-                            printWrapper.style.justifyContent = 'flex-start';
-                            printWrapper.style.padding = '0';
-                            printWrapper.style.margin = '0';
-                            
-                            // Schatten entfernen für saubereren Druck
-                            pdfContent.style.filter = 'none';
-                        }
-                    }
-                },
-                jsPDF:        { 
-                    unit: 'mm', 
-                    format: 'a4', 
-                    orientation: 'portrait' 
-                }
-            };
+        const element = document.getElementById("pdf-content");
 
-            html2pdf().set(opt).from(element).save().then(() => {
+        const opt = {
+          margin: 10,
+          filename: "Mein_Rechercheleitfaden.pdf",
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            // DER ULTIMATIVE FIX GEGEN DAS ABSCHNEIDEN!
+            onclone: function (clonedDoc) {
+              const printWrapper = clonedDoc.getElementById("print-wrapper");
+              const pdfContent = clonedDoc.getElementById("pdf-content");
+
+              if (printWrapper) {
+                // Im unsichtbaren Klon wird die Box gnadenlos an den ganz linken Rand gezwungen.
+                // Dadurch ist die X-Koordinate definitiv 0 und nichts wird mehr abgeschnitten!
+                printWrapper.style.justifyContent = "flex-start";
+                printWrapper.style.padding = "0";
+                printWrapper.style.margin = "0";
+
+                // Schatten entfernen für saubereren Druck
+                pdfContent.style.filter = "none";
+              }
+            },
+          },
+          jsPDF: {
+            unit: "mm",
+            format: "a4",
+            orientation: "portrait",
+          },
+        };
+
+        // Use setTimeout to yield the main thread so the loading state can render
+        setTimeout(() => {
+          html2pdf()
+            .set(opt)
+            .from(element)
+            .save()
+            .then(() => {
+              btn.innerHTML = originalText;
+              btn.disabled = false;
+              btn.setAttribute("aria-busy", "false");
+            })
+            .catch((err) => {
+              console.error("PDF Fehler: ", err);
+              btn.innerHTML = "Fehler aufgetreten";
+              setTimeout(() => {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
-            }).catch(err => {
-                console.error("PDF Fehler: ", err);
-                btn.innerHTML = "Fehler aufgetreten";
-                setTimeout(() => {
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                }, 3000);
+                btn.setAttribute("aria-busy", "false");
+              }, 3000);
             });
-        }
+        }, 50);
+      }
     </script>
-</body>
+  </body>
 </html>
