@@ -305,5 +305,21 @@
             });
         }
     </script>
+    <script>
+        // 🛡️ Sentinel: Intercept paste events in contenteditable elements to prevent XSS
+        // This ensures only plain text is pasted, stripping out any potentially malicious HTML.
+        document.addEventListener('paste', function(e) {
+            if (e.target && e.target.isContentEditable) {
+                e.preventDefault();
+                let text = '';
+                if (e.clipboardData || e.originalEvent.clipboardData) {
+                    text = (e.originalEvent || e).clipboardData.getData('text/plain');
+                } else if (window.clipboardData) {
+                    text = window.clipboardData.getData('Text');
+                }
+                document.execCommand('insertText', false, text);
+            }
+        });
+    </script>
 </body>
 </html>
