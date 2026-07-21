@@ -1,0 +1,3 @@
+## 2024-07-21 - Fix UI Freezing during PDF Generation
+**Learning:** `html2pdf.js` library executes heavily on the main thread, blocking the browser's UI from rendering updates (like loading spinners). Simply setting `innerHTML` immediately before calling `html2pdf` does not guarantee the new UI state will be painted.
+**Action:** Always wrap heavy synchronous library calls (like `html2pdf().save()`) in a `setTimeout()` to yield execution to the browser, ensuring any preceding UI state changes (loading indicators, disabled buttons) are rendered to the user before the thread locks up.
