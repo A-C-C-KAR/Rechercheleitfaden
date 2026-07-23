@@ -1,0 +1,3 @@
+## 2025-03-05 - UI Thread Blocking by html2pdf.js
+**Learning:** `html2pdf.js` operates synchronously during some of its initial processing and canvas generation, effectively blocking the main UI thread. If you update the DOM (e.g., adding a loading spinner) immediately before calling `html2pdf()`, the browser may not have a chance to paint the DOM updates, causing the UI to freeze without showing the loading state.
+**Action:** When implementing visual feedback (like spinners or text changes) before heavy synchronous operations like `html2pdf.js`, wrap the heavy operation in a `setTimeout(..., 50)` (or `requestAnimationFrame`). This yields the thread back to the browser, allowing it to paint the updated UI before the main thread is blocked.
