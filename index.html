@@ -249,6 +249,18 @@
     </div>
 
     <script>
+        // Security enhancement: Prevent XSS by intercepting rich HTML pastes in contenteditable elements
+        document.addEventListener('paste', function(e) {
+            // Only intercept pastes on contenteditable elements
+            if (e.target && e.target.isContentEditable) {
+                e.preventDefault();
+                // Extract plain text from clipboard
+                let text = (e.originalEvent || e).clipboardData.getData('text/plain');
+                // Insert only the plain text safely
+                document.execCommand('insertText', false, text);
+            }
+        });
+
         function downloadPDF() {
             const btn = document.querySelector('button');
             const originalText = btn.innerHTML;
